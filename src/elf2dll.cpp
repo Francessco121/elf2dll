@@ -401,11 +401,22 @@ int dino_dll::gotable_count(void)
 	{
 		reltext.get_entry(i, offset, symbol, type, addend);
 		symbols.get_symbol(symbol, name, value, size, bind, symbolType, section, other);
+		
+		std::string sectionName = "";
+
+		if (section >= 0 && section < elf.sections.size()) {
+			ELFIO::section* sec = elf.sections[section];
+			sectionName = sec->get_name();
+		}
 
 		switch (type)
 		{
 			case R_MIPS_GOT16:
 			case R_MIPS_CALL16:
+				if (sectionName == ".text" || sectionName == ".rodata" || sectionName == ".data" || sectionName == ".bss") {
+					continue;
+				}
+				
 				if (gotable_value(section, value) < 0) continue;
 				entries.push_back((u32) gotable_value(section, value));
 				continue;
@@ -417,7 +428,7 @@ int dino_dll::gotable_count(void)
 
 	entries.sort();
 	entries.unique();
-	count += entries.size() - 1;
+	count += entries.size();
 
 	gotable_number = count;
 	return count;
