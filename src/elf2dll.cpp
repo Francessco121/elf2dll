@@ -196,7 +196,7 @@ bool dino_dll::gpstub_patch(void)
 	if (!text) return true;
 
 	section* sec_reltext = section_by_name(".rel.text");
-	if (!sec_reltext) return false;
+	if (!sec_reltext) return true;
 
 	relocation_section_accessor reltext(elf, sec_reltext);
 	symbol_section_accessor symbols(elf, elf.sections[sec_reltext->get_link()]);
@@ -378,7 +378,7 @@ int dino_dll::gotable_count(void)
 	if (gotable_number) return gotable_number;
 
 	section* sec_reltext = section_by_name(".rel.text");
-	if (!sec_reltext) return false;
+	if (!sec_reltext) return 0;
 
 	relocation_section_accessor reltext(elf, sec_reltext);
 	symbol_section_accessor symbols(elf, elf.sections[sec_reltext->get_link()]);
